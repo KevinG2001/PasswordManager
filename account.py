@@ -34,7 +34,7 @@ def createAccount():
 def login():
     cursor = myDB.cursor()
     username = input("Enter username")
-    # password = input("Enter password")
+    password = input("Enter password")
     # Make sure to use placeholders in your query to prevent SQL injection
     searchUsername = "SELECT * from users WHERE username = %s"
 
@@ -43,4 +43,12 @@ def login():
 
     # Fetch the result (assuming you want to fetch one row)
     result = cursor.fetchone()
-    print(result)
+
+    if result:
+        if result[2] == password:
+            print("Its a match")
+        else:
+            print("Not a match")
+
+
+
