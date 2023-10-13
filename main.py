@@ -1,16 +1,37 @@
-# This is a sample Python script.
+import mysql.connector
+from dotenv import load_dotenv
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+load_dotenv()
+
+DB_HOST = os.getenv("DB_HOST")
+DB_USER = os.getenv("DB_USER")
+DB_NAME = os.getenv("DB_NAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+
+# Establish connection
+conn = mysql.connector.connect(
+    host=DB_HOST,
+    user=DB_USER,
+    database=DB_NAME,
+    password=DB_PASSWORD
+)
+
+# Create a cursor
+cursor = conn.cursor()
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+username = input("Please enter your username")
+password = input("Please enter your password")
 
+# Execute the INSERT statement
+insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
+values = (username, password)
+cursor.execute(insert_query, values)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+# Commit the changes
+conn.commit()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# Close cursor and connection when done
+cursor.close()
+conn.close()
