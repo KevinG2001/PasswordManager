@@ -18,6 +18,11 @@ myDB = mysql.connector.connect(
     password=DB_PASSWORD
 )
 
+uppercaseLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+lowercaseLetter = "abcdefghijklmnopqrstuvwxyz"
+specialchar = "$@_#"
+numericDigit = "0123456789"
+
 
 def createAccount():
     cursor = myDB.cursor()  # Create a cursor
@@ -33,7 +38,32 @@ def createAccount():
         else:
             print("Username in use")
             usernameAvaiable = False
-    password = input("Please enter your password")
+    validPassword = False
+    lowercaseValid = False
+    uppercaseValid = False
+    specialcharValid = False
+    numericdigitValid = False
+    while not validPassword:
+        password = input(
+            "Please enter a valid password\n Must contain a lower case and upper case letter,a numeric digit and a special character like $@_# "
+            "and be 8 characters long")
+        for i in password:
+            if i in lowercaseLetter:
+                lowercaseValid = True
+            if i in uppercaseLetter:
+                uppercaseValid = True
+            if i in specialchar:
+                specialcharValid = True
+            if i in numericDigit:
+                numericdigitValid = True
+        if len(password) >= 8:
+            passwordLengthValid = True
+        if(
+                lowercaseValid == True and uppercaseValid == True and specialcharValid == True and numericdigitValid == True and passwordLengthValid == True):
+            validPassword = True
+        else:
+            validPassword = False
+
     insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
     values = (username, password)
     cursor.execute(insert_query, values)
@@ -50,7 +80,7 @@ def login():
 
     # Searching the username in the database
     searchUsername = "SELECT * from users WHERE username = %s"
-    # Executing the quary
+    # Executing the query
     cursor.execute(searchUsername, (username,))
 
     # Getting the result of that username (getting the row)
