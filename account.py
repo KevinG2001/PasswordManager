@@ -1,7 +1,6 @@
 import mysql.connector
 from dotenv import load_dotenv
 import os
-
 load_dotenv()
 
 DB_HOST = os.getenv("DB_HOST")
@@ -20,13 +19,22 @@ myDB = mysql.connector.connect(
 
 def createAccount():
     cursor = myDB.cursor()  # Create a cursor
-    username = input("Please enter your username")
+    usernameAvaiable = False
+    while not usernameAvaiable:
+        username = input("Please enter your username")  # Takes input from the user and asigns it to a variable (Must add error check to makesure its not an INT)
+        cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
+        searchUsername = cursor.fetchone()
+        if not searchUsername:
+            usernameAvaiable = True
+        else:
+            print("Username in use")
+            usernameAvaiable = False
     password = input("Please enter your password")
     insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
     values = (username, password)
     cursor.execute(insert_query, values)
     myDB.commit()  # Commit the changes to the database
-    # Close cursor and myDBection when done
+    # Close cursor and myDBconection when done
     cursor.close()
     myDB.close()
 
@@ -49,6 +57,3 @@ def login():
             print("Its a match")
         else:
             print("Not a match")
-
-
-
