@@ -1,6 +1,7 @@
 import mysql.connector
 from dotenv import load_dotenv
 import os
+import hashlib, binascii
 
 # loading the .env
 load_dotenv()
@@ -22,6 +23,7 @@ uppercaseLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 lowercaseLetter = "abcdefghijklmnopqrstuvwxyz"
 specialchar = "$@_#"
 numericDigit = "0123456789"
+
 
 def createAccount():
     cursor = myDB.cursor()  # Create a cursor
@@ -57,14 +59,19 @@ def createAccount():
                 numericdigitValid = True
         if len(password) >= 8:
             passwordLengthValid = True
-        if(
+        if (
                 lowercaseValid == True and uppercaseValid == True and specialcharValid == True and numericdigitValid == True and passwordLengthValid == True):
             validPassword = True
         else:
             validPassword = False
 
+    #Turning password into string
+    password = str(password)
+    #Turning string into hash
+    hashPass = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), b'salt', 100000)
+    #Inserting hash into database
+    values = (username, binascii.hexlify(hashPass))
     insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
-    values = (username, password)
     cursor.execute(insert_query, values)
     myDB.commit()  # Commit the changes to the database
     # Close cursor and myDBconection when done
@@ -76,7 +83,6 @@ def login():
     cursor = myDB.cursor()
     username = input("Enter username")  # Getting the user to input there username
     password = input("Enter password")  # Getting the user to input there password
-
     # Searching the username in the database
     searchUsername = "SELECT * from users WHERE username = %s"
     # Executing the query
