@@ -23,7 +23,6 @@ lowercaseLetter = "abcdefghijklmnopqrstuvwxyz"
 specialchar = "$@_#"
 numericDigit = "0123456789"
 
-
 def createAccount():
     cursor = myDB.cursor()  # Create a cursor
     # Boolean to see if the username is avaiable, will do this while loop until the username is avaiable
@@ -87,7 +86,10 @@ def login():
     result = cursor.fetchone()
     # Checking to see if the password matches
     if result:
+        userID = result[0]
         if result[2] == password:
-            print("Its a match")
+            print("Log in successful")
+            return userID
         else:
             print("Not a match")
+    return None
