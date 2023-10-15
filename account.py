@@ -65,11 +65,11 @@ def createAccount():
         else:
             validPassword = False
 
-    #Turning password into string
+    # Turning password into string
     password = str(password)
-    #Turning string into hash
+    # Turning string into hash
     hashPass = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), b'salt', 100000)
-    #Inserting hash into database
+    # Inserting hash into database
     values = (username, binascii.hexlify(hashPass))
     insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
     cursor.execute(insert_query, values)
@@ -88,13 +88,18 @@ def login():
     # Executing the query
     cursor.execute(searchUsername, (username,))
 
+    password = str(password)  # Turning password into string
+    hashPass = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), b'salt', 100000)  # Turning string into hash
+    hexPass = binascii.hexlify(hashPass)  # Converting byte to hexadecimal
+    hashPassStr = hexPass.decode('utf-8')  # decoding hexadecimal to string
+
     # Getting the result of that username (getting the row)
     result = cursor.fetchone()
     # Checking to see if the password matches
     if result:
         userID = result[0]
         username = result[1]
-        if result[2] == password:
+        if result[2] == hashPassStr:
             print("Log in successful")
             return userID, username
         else:
