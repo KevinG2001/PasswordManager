@@ -22,6 +22,15 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS passwords (
+    platform VARCHAR(255) NOT NULL,
+    userID INT,
+    email_username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    FOREIGN KEY (userID) REFERENCES users(userID)
+);
+
+
 <h2>Database code for .env</h2>
 DB_HOST=localhost<br>
 DB_USER=root<br>
