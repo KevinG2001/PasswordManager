@@ -6,9 +6,13 @@ from passwords import createPassword, displayPasswords
 def main():
     one_or_two = int(input("1)Login\n2)Create Account"))
     if one_or_two == 1:
-        userID = login()  # Called from account.py
-        # createPassword(userID)
-        displayPasswords(userID)
+        userID, username = login()  # Called from account.py
+        one_or_two = int(input("1)Create new password\n2)Display all passwords\n"))
+        if one_or_two == 1:
+            createPassword(userID)
+        if one_or_two == 2:
+            displayPasswords(userID)
+
     if one_or_two == 2:
         createAccount()  # Called from account.py
     else:

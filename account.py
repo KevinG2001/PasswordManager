@@ -87,9 +87,10 @@ def login():
     # Checking to see if the password matches
     if result:
         userID = result[0]
+        username = result[1]
         if result[2] == password:
             print("Log in successful")
-            return userID
+            return userID, username
         else:
             print("Not a match")
     return None

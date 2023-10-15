@@ -27,14 +27,15 @@ numericDigit = "0123456789"
 def createPassword(userID):
     cursor = myDB.cursor()
     platform = input("Please enter the platform e.g. Youtube")
-    email = input("Please enter your email")
-    password = input("Please enter your password")
+    email = input("Please enter your email\n")
+    password = input("Please enter your password\n")
     values = (platform, userID, email, password)
     insert_query = "INSERT INTO passwords (platform, userid, email_username, password) VALUES (%s, %s, %s, %s)"
     cursor.execute(insert_query, values)
     myDB.commit()
     cursor.close()
     myDB.close()
+
 
 def displayPasswords(userID):
     cursor = myDB.cursor()
