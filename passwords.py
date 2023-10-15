@@ -35,3 +35,14 @@ def createPassword(userID):
     myDB.commit()
     cursor.close()
     myDB.close()
+
+def displayPasswords(userID):
+    cursor = myDB.cursor()
+    cursor.execute("SELECT * FROM passwords WHERE userID = %s", (userID,))
+    searchByID = cursor.fetchall()
+    print("Platform,     UserID,     ,Email,       Password")
+    for i in searchByID:
+        print(i)
+
+    cursor.close()
+    myDB.close()
