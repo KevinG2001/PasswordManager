@@ -1,4 +1,9 @@
+import base64
+
 import mysql.connector
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from dotenv import load_dotenv
 import os
 
@@ -9,6 +14,21 @@ DB_HOST = os.getenv("DB_HOST")
 DB_USER = os.getenv("DB_USER")
 DB_NAME = os.getenv("DB_NAME")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
+saltStr = os.getenv("saltStr")
+# Turning salt to bytes
+saltByte = saltStr.encode('utf-8')
+
+kdf = PBKDF2HMAC(
+    algorithm=hashes.SHA256(),
+    length=32,
+    salt=saltByte,
+    iterations=480000,
+)
+
+# taken from https://cryptography.io/en/latest/fernet/
+
+# Key for password
+f = Fernet(b'9w98hmJ4ROMc0jdDZvc0okdE7zEuctooCOP0aRlsmzA=')
 
 # Establishing connection to database
 myDB = mysql.connector.connect(
@@ -29,7 +49,12 @@ def createPassword(userID):
     platform = input("Please enter the platform e.g. Youtube")
     email = input("Please enter your email\n")
     password = input("Please enter your password\n")
-    values = (platform, userID, email, password)
+    #Turning password into bytes
+    passwordByte = password.encode('utf-8')
+
+    # Encrypt password
+    encryptedPass = f.encrypt(passwordByte)
+    values = (platform, userID, email, encryptedPass)
     insert_query = "INSERT INTO passwords (platform, userid, email_username, password) VALUES (%s, %s, %s, %s)"
     cursor.execute(insert_query, values)
     myDB.commit()
@@ -42,8 +67,13 @@ def displayPasswords(userID):
     cursor.execute("SELECT * FROM passwords WHERE userID = %s", (userID,))
     searchByID = cursor.fetchall()
     print("Platform,     UserID,     ,Email,       Password")
+    # print(key)
+
     for i in searchByID:
-        print(i)
+        platform, user_id, email, password = i
+        passwordByte = password.encode('utf-8')
+        decrypted_password = f.decrypt(passwordByte)
+        print(f"{platform}, {user_id}, {email}, {decrypted_password}")
 
     cursor.close()
     myDB.close()
