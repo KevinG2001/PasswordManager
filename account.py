@@ -23,7 +23,7 @@ def createAccount():
 
     # Get USERNAME
     while True:
-        username = input("Please enter your username")
+        username = input("Please enter your username\n")
 
         cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
         searchUsername = cursor.fetchone()
@@ -37,7 +37,7 @@ def createAccount():
     while True:
         password = input(
             "Please enter a valid password\n Must contain a lower case and upper case letter,a numeric digit and a special character like $@_# "
-            "and be 8 characters long"
+            "and be 8 characters long\n"
         )
         if is_valid_password(password):
             break
@@ -46,11 +46,13 @@ def createAccount():
     hashPass = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), b"salt", 100000)
 
     # Inserting hash into database
-    values = (username, binascii.hexlify(hashPass))
-    insert_query = "INSERT INTO users (username, password) VALUES (%s, %s)"
-    cursor.execute(insert_query, values)
+    cursor.execute(
+        "INSERT INTO users (username, password) VALUES (%s, %s)",
+        (username, binascii.hexlify(hashPass)),
+    )
+
     myDB.commit()  # Commit the changes to the database
-    # Close cursor and myDBconection when done
+
     cursor.close()
     myDB.close()
 
