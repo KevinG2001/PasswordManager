@@ -12,16 +12,8 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 # Establishing connection to database
 myDB = mysql.connector.connect(
-    host=DB_HOST,
-    user=DB_USER,
-    database=DB_NAME,
-    password=DB_PASSWORD
+    host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
 )
-
-uppercaseLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-lowercaseLetter = "abcdefghijklmnopqrstuvwxyz"
-specialchar = "$@_#"
-numericDigit = "0123456789"
 
 
 def createPassword(userID):
