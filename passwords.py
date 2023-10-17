@@ -30,13 +30,13 @@ kdf = PBKDF2HMAC(
 # Key for password
 f = Fernet(b'9w98hmJ4ROMc0jdDZvc0okdE7zEuctooCOP0aRlsmzA=')
 
-# Establishing connection to database
-myDB = mysql.connector.connect(
-    host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
-)
+
 
 
 def createPassword(userID, email, password, platform):
+    myDB = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
+    )
     cursor = myDB.cursor()
     #Turning password into bytes
     passwordByte = password.encode('utf-8')
@@ -52,9 +52,12 @@ def createPassword(userID, email, password, platform):
     myDB.close()
 
 
-def displayPasswords(username):
+def displayPasswords(userID):
+    myDB = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
+    )
     cursor = myDB.cursor()
-    cursor.execute("SELECT * FROM passwords WHERE username = %s", (username,))
+    cursor.execute("SELECT * FROM passwords WHERE userID = %s", (userID,))
     searchByID = cursor.fetchall()
     print("Platform,     UserID,     ,Email,       Password")
     # print(key)

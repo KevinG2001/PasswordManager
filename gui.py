@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from account import login, createAccount
-from passwords import createPassword
+from passwords import createPassword, displayPasswords
 
 
 class GUI:
@@ -103,12 +103,23 @@ class GUI:
         if self.loginFrame:
             self.loginFrame.destroy()
 
-        self.passwordFrame = tk.Frame(self.mainWindow, height=425)
-        self.passwordFrame.pack(expand=1, fill=tk.Y)
+        self.passwordFrame = tk.Frame(self.mainWindow, height=425, bg="green")
+        self.passwordFrame.pack(expand=1, fill=tk.BOTH)
 
-        self.createPasswordFrame = tk.Frame(self.mainWindow, height=75, bg="green")
+        self.createPasswordFrame = tk.Frame(self.mainWindow, height=75, bg="black")
         self.createPasswordFrame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
+        self.passwordHolder = tk.Frame(self.passwordFrame, bg="black", height=400, width=650)
+        self.passwordHolder.pack(pady=15)
+
+
+
+
+
+
+
+        #CREATE ACCOUNT BUTTONS AND LABELS
+        # Green part at bottom of GUI
         # Login Labels/entry
         self.PlatformLbl = tk.Label(self.createPasswordFrame, text="Platform:")
         self.PlatformLbl.grid(row=0, column=0, padx=(100, 10), pady=5)
@@ -131,7 +142,7 @@ class GUI:
                                  command=lambda: self.createPassword(userID))
         createAccBtn.grid(row=0, column=4, padx=(10, 100), pady=5)
 
-        createAccBtn = tk.Button(self.createPasswordFrame, text="Refresh Passwords")
+        createAccBtn = tk.Button(self.createPasswordFrame, text="Refresh Passwords", command=lambda: displayPasswords(userID))
         createAccBtn.grid(row=2, column=4, padx=(10, 100), pady=5)
 
     def createPassword(self, userID):

@@ -13,13 +13,11 @@ DB_USER = os.getenv("DB_USER")
 DB_NAME = os.getenv("DB_NAME")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-# Establishing connection to database
-myDB = mysql.connector.connect(
-    host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
-)
-
 
 def createAccount(username, password):
+    myDB = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
+    )
     cursor = myDB.cursor()
 
     # Get USERNAME
@@ -64,6 +62,9 @@ def createAccount(username, password):
 
 
 def login(username, password):  # Takes username and password from gui.py
+    myDB = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
+    )
     cursor = myDB.cursor()
     # Searching the username in the database
     searchUsername = "SELECT * from users WHERE username = %s"
@@ -87,6 +88,9 @@ def login(username, password):  # Takes username and password from gui.py
             print("Log in successful")
             return userID, username
     return None
+
+    myDB.close()
+
 
 
 def is_valid_password(password):
