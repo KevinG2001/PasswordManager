@@ -88,8 +88,6 @@ def login(username, password):  # Takes username and password from gui.py
         if result[2] == hashPassStr:
             print("Log in successful")
             return userID, username
-        else:
-            print("Not a match")
     return None
 
 
