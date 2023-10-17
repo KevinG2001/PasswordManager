@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import hashlib, binascii
 import string
+import tkinter as tk
 
 # loading the .env
 load_dotenv()
@@ -18,29 +19,36 @@ myDB = mysql.connector.connect(
 )
 
 
-def createAccount():
+def createAccount(username, password):
     cursor = myDB.cursor()
 
     # Get USERNAME
     while True:
-        username = input("Please enter your username\n")
+        # username = input("Please enter your username\n")
 
         cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
         searchUsername = cursor.fetchone()
 
         if searchUsername:
-            print("Username in use")
+            alertWindow = tk.Toplevel()
+            alertWindow.geometry("100x50")
+            AlertLbl = tk.Label(alertWindow, text="Username taken")
+            AlertLbl.pack()
+            return alertWindow
         else:
             break
 
     # Get PASSWORD
-    while True:
-        password = input(
-            "Please enter a valid password\n Must contain a lower case and upper case letter,a numeric digit and a special character like $@_# "
-            "and be 8 characters long\n"
-        )
-        if is_valid_password(password):
-            break
+    if is_valid_password(password):
+        print("Passworld Valid")
+    else:
+        alertWindow = tk.Toplevel()
+        alertWindow.geometry("100x50")
+        AlertLbl = tk.Label(alertWindow, text="Invalid Password")
+        AlertLbl.pack()
+        return alertWindow
+
+
 
     # Turning string into hash
     hashPass = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), b"salt", 100000)
@@ -57,10 +65,8 @@ def createAccount():
     myDB.close()
 
 
-def login():
+def login(username, password):  # Takes username and password from gui.py
     cursor = myDB.cursor()
-    username = input("Enter username")  # Getting the user to input there username
-    password = input("Enter password")  # Getting the user to input there password
     # Searching the username in the database
     searchUsername = "SELECT * from users WHERE username = %s"
     # Executing the query
