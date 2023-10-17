@@ -24,8 +24,6 @@ def createAccount(username, password):
 
     # Get USERNAME
     while True:
-        # username = input("Please enter your username\n")
-
         cursor.execute("SELECT username FROM users WHERE username = %s", (username,))
         searchUsername = cursor.fetchone()
 

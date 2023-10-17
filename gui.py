@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from account import login, createAccount
+from passwords import createPassword
 
 
 class GUI:
@@ -29,7 +30,8 @@ class GUI:
         password = self.getPasswordEntry()  # gets the username from the getmethods
         result = login(username, password)  # Passes the username and password into the login function in account.py
         if result:
-            self.displayPasswordFrame()
+            userID = result[0]
+            self.displayPasswordFrame(userID)
         else:
             alertWindow = tk.Toplevel()
             alertWindow.geometry("100x50")
@@ -97,7 +99,7 @@ class GUI:
             self.CreateAccFrame.destroy()
             self.makeLoginFrame()
 
-    def displayPasswordFrame(self):
+    def displayPasswordFrame(self, userID):
         if self.loginFrame:
             self.loginFrame.destroy()
 
@@ -114,7 +116,7 @@ class GUI:
         self.PlatformEntry.grid(row=0, column=1, columnspan=3, sticky="nsew", padx=(10, 10), pady=5)
 
         # Login Labels/entry
-        self.usernameLbl = tk.Label(self.createPasswordFrame, text="Username:")
+        self.usernameLbl = tk.Label(self.createPasswordFrame, text="Username/Email:")
         self.usernameLbl.grid(row=2, column=0, padx=(100, 10), pady=5)
         self.usernameEntry = tk.Entry(self.createPasswordFrame)
         self.usernameEntry.grid(row=2, column=1, padx=(10, 10), pady=5)
@@ -125,8 +127,18 @@ class GUI:
         self.passwordEntry = tk.Entry(self.createPasswordFrame)
         self.passwordEntry.grid(row=2, column=3, padx=(10, 10), pady=5)
 
-        createAccBtn = tk.Button(self.createPasswordFrame, text="Create Password")
+        createAccBtn = tk.Button(self.createPasswordFrame, text="Create Password",
+                                 command=lambda: self.createPassword(userID))
         createAccBtn.grid(row=0, column=4, padx=(10, 100), pady=5)
 
         createAccBtn = tk.Button(self.createPasswordFrame, text="Refresh Passwords")
         createAccBtn.grid(row=2, column=4, padx=(10, 100), pady=5)
+
+    def createPassword(self, userID):
+        email = self.getUsernameEntry()
+        password = self.getPasswordEntry()
+        platform = self.getPlatformEntry()
+
+        createPassword(userID, email, password, platform)
+
+
