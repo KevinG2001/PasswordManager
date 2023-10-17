@@ -52,7 +52,7 @@ def createPassword(userID, email, password, platform):
     myDB.close()
 
 
-def displayPasswords(userID):
+def getPasswords(userID):
     myDB = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
     )
@@ -61,12 +61,14 @@ def displayPasswords(userID):
     searchByID = cursor.fetchall()
     print("Platform,     UserID,     ,Email,       Password")
     # print(key)
+    passwordList = []
 
     for i in searchByID:
         platform, user_id, email, password = i
         passwordByte = password.encode('utf-8')
         decrypted_password = f.decrypt(passwordByte)
-        print(f"{platform}, {user_id}, {email}, {decrypted_password}")
+        passwordList.append((platform, decrypted_password, email))
 
     cursor.close()
     myDB.close()
+    return passwordList

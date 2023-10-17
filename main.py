@@ -1,5 +1,3 @@
-from account import login, createAccount
-from passwords import createPassword, displayPasswords
 from gui import GUI
 import os
 

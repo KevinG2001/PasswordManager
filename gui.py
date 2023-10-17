@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from account import login, createAccount
-from passwords import createPassword, displayPasswords
+from passwords import createPassword, getPasswords
 
 
 class GUI:
@@ -22,6 +22,7 @@ class GUI:
 
     def getPasswordEntry(self):
         return self.passwordEntry.get()  # Gets the password from the entry field
+
     def getPlatformEntry(self):
         return self.PlatformEntry.get()  # Gets the playform from the entry field
 
@@ -112,13 +113,7 @@ class GUI:
         self.passwordHolder = tk.Frame(self.passwordFrame, bg="black", height=400, width=650)
         self.passwordHolder.pack(pady=15)
 
-
-
-
-
-
-
-        #CREATE ACCOUNT BUTTONS AND LABELS
+        # CREATE ACCOUNT BUTTONS AND LABELS
         # Green part at bottom of GUI
         # Login Labels/entry
         self.PlatformLbl = tk.Label(self.createPasswordFrame, text="Platform:")
@@ -142,8 +137,9 @@ class GUI:
                                  command=lambda: self.createPassword(userID))
         createAccBtn.grid(row=0, column=4, padx=(10, 100), pady=5)
 
-        createAccBtn = tk.Button(self.createPasswordFrame, text="Refresh Passwords", command=lambda: displayPasswords(userID))
-        createAccBtn.grid(row=2, column=4, padx=(10, 100), pady=5)
+        displayPassBtn = tk.Button(self.createPasswordFrame, text="Refresh Passwords",
+                                   command=lambda: self.refreshPasswords(userID))
+        displayPassBtn.grid(row=2, column=4, padx=(10, 100), pady=5)
 
     def createPassword(self, userID):
         email = self.getUsernameEntry()
@@ -152,4 +148,12 @@ class GUI:
 
         createPassword(userID, email, password, platform)
 
+    def refreshPasswords(self, userID):
+
+        if self.passwordHolder.winfo_exists():
+            for widget in self.passwordHolder.winfo_children():
+                widget.destroy()
+
+        for password in getPasswords(userID):
+            print(password[0], password[1], password[2])
 
