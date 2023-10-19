@@ -149,11 +149,24 @@ class GUI:
         createPassword(userID, email, password, platform)
 
     def refreshPasswords(self, userID):
+        accRow = 0
 
         if self.passwordHolder.winfo_exists():
             for widget in self.passwordHolder.winfo_children():
                 widget.destroy()
 
-        for password in getPasswords(userID):
-            print(password[0], password[1], password[2])
+        for accDetails in getPasswords(userID):
+            accRow += 1
+            lblCol = 0
+            # print(accDetails[0], accDetails[1], accDetails[2])
+            self.AccountFrame = tk.Frame(self.passwordHolder)
+            self.AccountFrame.grid(row=accRow)
+
+            # Labels
+            emailLbl = tk.Label(self.AccountFrame, text=f"Email: {accDetails[1]}")
+            emailLbl.grid(row=0, column=lblCol)
+            platformLbl = tk.Label(self.AccountFrame, text=f"Platform: {accDetails[0]}")
+            platformLbl.grid(row=0, column=lblCol + 1)
+            passwordLbl = tk.Label(self.AccountFrame, text=f"Password: {accDetails[2]}")
+            passwordLbl.grid(row=0, column=lblCol + 2)
 
