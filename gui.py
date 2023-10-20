@@ -111,7 +111,7 @@ class GUI:
         self.createPasswordFrame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
         self.passwordHolder = tk.Frame(self.passwordFrame, bg="black", height=400, width=650)
-        self.passwordHolder.pack(pady=15)
+        self.passwordHolder.pack(pady=15, expand=0)
 
         # CREATE ACCOUNT BUTTONS AND LABELS
         # Green part at bottom of GUI
@@ -159,14 +159,32 @@ class GUI:
             accRow += 1
             lblCol = 0
             # print(accDetails[0], accDetails[1], accDetails[2])
-            self.AccountFrame = tk.Frame(self.passwordHolder)
+            self.AccountFrame = tk.Frame(self.passwordHolder, width=425)
             self.AccountFrame.grid(row=accRow)
 
             # Labels
-            emailLbl = tk.Label(self.AccountFrame, text=f"Email: {accDetails[1]}")
-            emailLbl.grid(row=0, column=lblCol)
-            platformLbl = tk.Label(self.AccountFrame, text=f"Platform: {accDetails[0]}")
-            platformLbl.grid(row=0, column=lblCol + 1)
-            passwordLbl = tk.Label(self.AccountFrame, text=f"Password: {accDetails[2]}")
-            passwordLbl.grid(row=0, column=lblCol + 2)
+            platformLbl = tk.Label(self.AccountFrame, text=f"Platform:")
+            platformLbl.grid(row=0, column=lblCol, padx=(0, 0))
+            # UserAccLabels
+            UserPlatformLbl = tk.Label(self.AccountFrame, text=f"{accDetails[0]}")
+            UserPlatformLbl.grid(row=0, column=lblCol + 1, padx=(1, 10))
+
+            # Labels
+            emailLbl = tk.Label(self.AccountFrame, text=f"Email:")
+            emailLbl.grid(row=0, column=lblCol + 2, padx=(0, 0))
+            # UserAccLabels
+            UserEmailLbl = tk.Label(self.AccountFrame, text=f"{accDetails[1]}")
+            UserEmailLbl.grid(row=0, column=lblCol + 3, padx=(1, 10))
+
+            # Labels
+            passwordLbl = tk.Label(self.AccountFrame, text=f"Password:")
+            passwordLbl.grid(row=0, column=lblCol + 4, padx=(0, 0))
+            # UserAccLabels
+            UserPasswordLbl = tk.Label(self.AccountFrame, text=f"{accDetails[2]}")
+            UserPasswordLbl.grid(row=0, column=lblCol + 5, padx=(1, 10))
+
+
+
+
+
 

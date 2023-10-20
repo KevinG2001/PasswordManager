@@ -67,7 +67,7 @@ def getPasswords(userID):
         platform, user_id, email, password = i
         passwordByte = password.encode('utf-8')
         decrypted_password = f.decrypt(passwordByte)
-        passwordList.append((platform, decrypted_password, email))
+        passwordList.append((platform, str(decrypted_password), email))
 
     cursor.close()
     myDB.close()
