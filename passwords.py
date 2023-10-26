@@ -31,8 +31,6 @@ kdf = PBKDF2HMAC(
 f = Fernet(b'9w98hmJ4ROMc0jdDZvc0okdE7zEuctooCOP0aRlsmzA=')
 
 
-
-
 def createPassword(userID, email, password, platform):
     myDB = mysql.connector.connect(
         host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
@@ -67,7 +65,7 @@ def getPasswords(userID):
         platform, user_id, email, password = i
         passwordByte = password.encode('utf-8')
         decrypted_password = f.decrypt(passwordByte)
-        passwordList.append((platform, str(decrypted_password), email))
+        passwordList.append((platform, email, decrypted_password.decode("utf-8")))
 
     cursor.close()
     myDB.close()
