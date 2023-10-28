@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 from account import login, createAccount
 from passwords import createPassword, getPasswords
@@ -149,36 +150,21 @@ class GUI:
         createPassword(userID, email, password, platform)
 
     def refreshPasswords(self, userID):
-        accRow = 0
-
         if self.passwordHolder.winfo_exists():
             for widget in self.passwordHolder.winfo_children():
                 widget.destroy()
 
+        table = ttk.Treeview(self.passwordHolder, columns=("Platform", "email/username", "password"), show="headings")
+        table.heading("Platform", text="Platform")
+        table.heading("email/username", text="Email/Username")
+        table.heading("password", text="Password")
+        table.pack()
+
         for accDetails in getPasswords(userID):
-            accRow += 1
-            lblCol = 0
-            # print(accDetails[0], accDetails[1], accDetails[2])
-            self.AccountFrame = tk.Frame(self.passwordHolder, width=425)
-            self.AccountFrame.grid(row=accRow)
+            platform = accDetails[0]
+            email = accDetails[1]
+            password = accDetails[2]
 
-            # Labels
-            platformLbl = tk.Label(self.AccountFrame, text=f"Platform:", width=10)
-            platformLbl.grid(row=0, column=0)
-            # UserAccLabels
-            UserPlatformLbl = tk.Label(self.AccountFrame, text=f"{accDetails[0]}", width=10)
-            UserPlatformLbl.grid(row=0, column=lblCol + 1, padx=1)
+            tableData = (platform, email, password)
 
-            # Labels
-            emailLbl = tk.Label(self.AccountFrame, text=f"Email:", width=10)
-            emailLbl.grid(row=0, column=lblCol + 2, padx=(0, 0))
-            # UserAccLabels
-            UserEmailLbl = tk.Label(self.AccountFrame, text=f"{accDetails[1]}")
-            UserEmailLbl.grid(row=0, column=lblCol + 3)
-
-            # Labels
-            passwordLbl = tk.Label(self.AccountFrame, text=f"Password:", width=10)
-            passwordLbl.grid(row=0, column=lblCol + 4, padx=(0, 0))
-            # UserAccLabels
-            UserPasswordLbl = tk.Label(self.AccountFrame, text=f"{accDetails[2]}", width=10)
-            UserPasswordLbl.grid(row=0, column=lblCol + 5)
+            table.insert(parent="", index=0, values=tableData)
