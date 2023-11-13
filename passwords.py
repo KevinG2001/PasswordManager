@@ -30,42 +30,43 @@ kdf = PBKDF2HMAC(
 # Key for password
 f = Fernet(b'9w98hmJ4ROMc0jdDZvc0okdE7zEuctooCOP0aRlsmzA=')
 
-# Establishing connection to database
-myDB = mysql.connector.connect(
-    host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
-)
 
-
-def createPassword(userID):
+def createPassword(userID, email, password, platform):
+    myDB = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
+    )
     cursor = myDB.cursor()
-    platform = input("Please enter the platform e.g. Youtube")
-    email = input("Please enter your email\n")
-    password = input("Please enter your password\n")
     #Turning password into bytes
     passwordByte = password.encode('utf-8')
+    print(userID, email, password, platform)
 
     # Encrypt password
     encryptedPass = f.encrypt(passwordByte)
     values = (platform, userID, email, encryptedPass)
-    insert_query = "INSERT INTO passwords (platform, userid, email_username, password) VALUES (%s, %s, %s, %s)"
+    insert_query = "INSERT INTO passwords (platform, userID, email_username, password) VALUES (%s, %s, %s, %s)"
     cursor.execute(insert_query, values)
     myDB.commit()
     cursor.close()
     myDB.close()
 
 
-def displayPasswords(userID):
+def getPasswords(userID):
+    myDB = mysql.connector.connect(
+        host=DB_HOST, user=DB_USER, database=DB_NAME, password=DB_PASSWORD
+    )
     cursor = myDB.cursor()
     cursor.execute("SELECT * FROM passwords WHERE userID = %s", (userID,))
     searchByID = cursor.fetchall()
     print("Platform,     UserID,     ,Email,       Password")
     # print(key)
+    passwordList = []
 
     for i in searchByID:
         platform, user_id, email, password = i
         passwordByte = password.encode('utf-8')
         decrypted_password = f.decrypt(passwordByte)
-        print(f"{platform}, {user_id}, {email}, {decrypted_password}")
+        passwordList.append((platform, email, decrypted_password.decode("utf-8")))
 
     cursor.close()
     myDB.close()
+    return passwordList
