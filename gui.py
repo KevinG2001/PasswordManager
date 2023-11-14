@@ -1,12 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
 
-from account import login, createAccount
-from passwords import createPassword, getPasswords
+# from account import login, createAccount
+# from passwords import createPassword, getPasswords
+from user_controller import UserController
 
 
 class GUI:
     def __init__(self):
+        self.uc = UserController()
+
         # Main Window
         self.mainWindow = tk.Tk()
         self.mainWindow.geometry("750x500")
@@ -30,14 +33,15 @@ class GUI:
     def login(self):
         username = self.getUsernameEntry()  # gets the username from the getmethods
         password = self.getPasswordEntry()  # gets the username from the getmethods
-        result = login(username, password)  # Passes the username and password into the login function in account.py
-        if result:
-            userID = result[0]
-            self.displayPasswordFrame(userID)
-        else:
+
+        try:
+            self.uc.login(username, password)
+            self.displayPasswordFrame()
+
+        except ValueError as e:
             alertWindow = tk.Toplevel()
             alertWindow.geometry("100x50")
-            AlertLbl = tk.Label(alertWindow, text="Invalid Login")
+            AlertLbl = tk.Label(alertWindow, text=str(e))
             AlertLbl.pack()
 
     def makeLoginFrame(self):
@@ -47,13 +51,13 @@ class GUI:
 
         # Login Labels/entry
         self.usernameLbl = tk.Label(self.loginFrame, text="Username:")
-        self.usernameLbl.grid(row=0, column=0, padx=(10, 0), pady=1, sticky='w')
+        self.usernameLbl.grid(row=0, column=0, padx=(10, 0), pady=1, sticky="w")
         self.usernameEntry = tk.Entry(self.loginFrame)
         self.usernameEntry.grid(row=0, column=1, padx=(0, 10), pady=1)
 
         # Password Labels/entry
         self.passwordLbl = tk.Label(self.loginFrame, text="Password:")
-        self.passwordLbl.grid(row=1, column=0, padx=(10, 0), pady=1, sticky='w')
+        self.passwordLbl.grid(row=1, column=0, padx=(10, 0), pady=1, sticky="w")
         self.passwordEntry = tk.Entry(self.loginFrame)
         self.passwordEntry.grid(row=1, column=1, padx=(0, 10), pady=1)
 
@@ -62,7 +66,9 @@ class GUI:
         loginBtn.grid(row=2, column=0, columnspan=2, pady=(0, 10))
 
         # Create account button
-        createAccLbl = tk.Label(self.loginFrame, fg="blue", text="No account? Create Account!")
+        createAccLbl = tk.Label(
+            self.loginFrame, fg="blue", text="No account? Create Account!"
+        )
         createAccLbl.grid(row=3, column=0, columnspan=2, pady=(0, 10))
         createAccLbl.bind("<Button-1>", lambda event: self.makeCreateAccFrame())
 
@@ -75,33 +81,38 @@ class GUI:
 
         # Login Labels/entry
         self.usernameLbl = tk.Label(self.CreateAccFrame, text="Username:")
-        self.usernameLbl.grid(row=0, column=0, padx=(10, 0), pady=1, sticky='w')
+        self.usernameLbl.grid(row=0, column=0, padx=(10, 0), pady=1, sticky="w")
         self.usernameEntry = tk.Entry(self.CreateAccFrame)
         self.usernameEntry.grid(row=0, column=1, padx=(0, 10), pady=1)
 
         # Password Labels/entry
         self.passwordLbl = tk.Label(self.CreateAccFrame, text="Password:")
-        self.passwordLbl.grid(row=1, column=0, padx=(10, 0), pady=1, sticky='w')
+        self.passwordLbl.grid(row=1, column=0, padx=(10, 0), pady=1, sticky="w")
         self.passwordEntry = tk.Entry(self.CreateAccFrame)
         self.passwordEntry.grid(row=1, column=1, padx=(0, 10), pady=1)
 
         # Create Acc Button
-        createAccBtn = tk.Button(self.CreateAccFrame, text="Create Account", command=self.createAcc)
+        createAccBtn = tk.Button(
+            self.CreateAccFrame, text="Create Account", command=self.createAcc
+        )
         createAccBtn.grid(row=2, column=0, columnspan=2, pady=(0, 10))
 
     def createAcc(self):
         username = self.getUsernameEntry()  # gets the username from the getmethods
         password = self.getPasswordEntry()  # gets the username from the getmethods
-        result = createAccount(username,
-                               password)  # Passes the username and password into the createAccount function in account.py
 
-        if result:
-            result.mainloop()
-        else:
+        try:
+            self.uc.register(username, password)
+
             self.CreateAccFrame.destroy()
-            self.makeLoginFrame()
+            self.displayPasswordFrame()
+        except ValueError as e:
+            alertWindow = tk.Toplevel()
+            alertWindow.geometry("100x50")
+            AlertLbl = tk.Label(alertWindow, text=str(e))
+            AlertLbl.pack()
 
-    def displayPasswordFrame(self, userID):
+    def displayPasswordFrame(self):
         if self.loginFrame:
             self.loginFrame.destroy()
 
@@ -111,7 +122,9 @@ class GUI:
         self.createPasswordFrame = tk.Frame(self.mainWindow, height=75, bg="black")
         self.createPasswordFrame.pack(side=tk.BOTTOM, fill=tk.BOTH, expand=0)
 
-        self.passwordHolder = tk.Frame(self.passwordFrame, bg="black", height=400, width=650)
+        self.passwordHolder = tk.Frame(
+            self.passwordFrame, bg="black", height=400, width=650
+        )
         self.passwordHolder.pack(pady=15, expand=0)
 
         # CREATE ACCOUNT BUTTONS AND LABELS
@@ -120,7 +133,9 @@ class GUI:
         self.PlatformLbl = tk.Label(self.createPasswordFrame, text="Platform:")
         self.PlatformLbl.grid(row=0, column=0, padx=(100, 10), pady=5)
         self.PlatformEntry = tk.Entry(self.createPasswordFrame)
-        self.PlatformEntry.grid(row=0, column=1, columnspan=3, sticky="nsew", padx=(10, 10), pady=5)
+        self.PlatformEntry.grid(
+            row=0, column=1, columnspan=3, sticky="nsew", padx=(10, 10), pady=5
+        )
 
         # Login Labels/entry
         self.usernameLbl = tk.Label(self.createPasswordFrame, text="Username/Email:")
@@ -134,37 +149,46 @@ class GUI:
         self.passwordEntry = tk.Entry(self.createPasswordFrame)
         self.passwordEntry.grid(row=2, column=3, padx=(10, 10), pady=5)
 
-        createAccBtn = tk.Button(self.createPasswordFrame, text="Create Password",
-                                 command=lambda: self.createPassword(userID))
+        createAccBtn = tk.Button(
+            self.createPasswordFrame,
+            text="Create Password",
+            command=lambda: self.createPassword(),
+        )
         createAccBtn.grid(row=0, column=4, padx=(10, 100), pady=5)
 
-        displayPassBtn = tk.Button(self.createPasswordFrame, text="Refresh Passwords",
-                                   command=lambda: self.refreshPasswords(userID))
+        displayPassBtn = tk.Button(
+            self.createPasswordFrame,
+            text="Refresh Passwords",
+            command=lambda: self.refreshPasswords(),
+        )
         displayPassBtn.grid(row=2, column=4, padx=(10, 100), pady=5)
+        self.refreshPasswords()
 
-    def createPassword(self, userID):
+    def createPassword(self):
         email = self.getUsernameEntry()
         password = self.getPasswordEntry()
         platform = self.getPlatformEntry()
 
-        createPassword(userID, email, password, platform)
+        self.uc.add_new_account_to_user(platform, email, password)
+        self.refreshPasswords()
 
-    def refreshPasswords(self, userID):
+    def refreshPasswords(self):
         if self.passwordHolder.winfo_exists():
             for widget in self.passwordHolder.winfo_children():
                 widget.destroy()
 
-        table = ttk.Treeview(self.passwordHolder, columns=("Platform", "email/username", "password"), show="headings")
+        table = ttk.Treeview(
+            self.passwordHolder,
+            columns=("Platform", "email/username", "password"),
+            show="headings",
+        )
         table.heading("Platform", text="Platform")
         table.heading("email/username", text="Email/Username")
         table.heading("password", text="Password")
         table.pack()
+        # {'YouTube': {'email': 'evean@gmail.com', 'password': 'passsword123'}}
 
-        for accDetails in getPasswords(userID):
-            platform = accDetails[0]
-            email = accDetails[1]
-            password = accDetails[2]
-
-            tableData = (platform, email, password)
+        for platform, details in self.uc.get_user_accounts().items():
+            tableData = (platform, details["email"], details["password"])
 
             table.insert(parent="", index=0, values=tableData)
