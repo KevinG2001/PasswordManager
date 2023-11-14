@@ -1,5 +1,5 @@
 .env
-.json
+*.json
 .idea/
 
 # Installer logs
