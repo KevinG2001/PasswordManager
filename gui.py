@@ -1,8 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-
-# from account import login, createAccount
-# from passwords import createPassword, getPasswords
 from user_controller import UserController
 
 
