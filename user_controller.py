@@ -1,3 +1,4 @@
+import string
 from database_controller import DatabaseController
 from encryption_controller import EncryptionController
 
@@ -14,6 +15,11 @@ class UserController:
         self.set_user_details(username, password)
 
     def register(self, username, password):
+        if not self._is_valid_password(password):
+            raise ValueError(
+                "Password must include: at least 1 of each:\nLower case character\nUpper case character\nNumber\nSpecial character"
+            )
+
         if self.dc.user_already_exists(username, password):
             raise ValueError("User Already Exists")
 
@@ -30,4 +36,15 @@ class UserController:
     def add_new_account_to_user(self, platform, email, account_password):
         self.dc.add_new_account_to_user(
             self.username, self.password, platform, email, account_password
+        )
+
+    def _is_valid_password(self, password):
+        return all(
+            [
+                any([x in string.ascii_lowercase for x in password]),
+                any([x in string.ascii_uppercase for x in password]),
+                any([x in string.punctuation for x in password]),
+                any([x in string.digits for x in password]),
+                len(password) >= 8,
+            ]
         )
