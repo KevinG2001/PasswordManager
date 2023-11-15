@@ -17,7 +17,7 @@ class UserController:
     def register(self, username, password):
         if not self._is_valid_password(password):
             raise ValueError(
-                "Password must include: at least 1 of each:\nLower case character\nUpper case character\nNumber\nSpecial character"
+                "Password must at least 8 characters long and include: at least 1 of each:\nLower case character\nUpper case character\nNumber\nSpecial character"
             )
 
         if self.dc.user_already_exists(username, password):
