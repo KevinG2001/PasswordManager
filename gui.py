@@ -105,7 +105,7 @@ class GUI:
             self.displayPasswordFrame()
         except ValueError as e:
             alertWindow = tk.Toplevel()
-            alertWindow.geometry("250x100")
+            alertWindow.geometry("400x100")
             AlertLbl = tk.Label(alertWindow, text=str(e))
             AlertLbl.pack()
 
